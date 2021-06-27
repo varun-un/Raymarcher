@@ -15,14 +15,27 @@ public class Vector3 {
     private double z;
 
     /**
-     * Creates a default Vector3 at (0, 0, 0)
+     * Creates a default zero Vector3 at (0, 0, 0)
      */
     public Vector3() {
         this(0,0,0);
     }
 
     /**
-     * Creates a Vector3 for the passed coordinates
+     * Creates a Vector3 in the direction of the given unit 
+     * vector and with the given lentgh (magnitude)
+     * @param unitVector The unit vector for the Vector3
+     * @param length The length (magnitude) of the Vector3 to be created
+     */
+    public Vector3(Vector3 unitVector, double length) {
+        Vector3 vector = unitVector.multiply(length);
+        this.x = vector.x;
+        this.y = vector.y;
+        this.z = vector.z;
+    }
+
+    /**
+     * Creates a Vector3 with the passed coordinates
      * @param x The x-axis coordinate
      * @param y The y-axis coordinate
      * @param z The z-axis coordinate
@@ -110,7 +123,8 @@ public class Vector3 {
     }
 
     /**
-     * Gives the length of the Vector3
+     * Gives the length of the vector. This is the same as the
+     * vector's magnitude.
      * @return The length of the vector
      */
     public double length() {
@@ -118,23 +132,85 @@ public class Vector3 {
     }
 
     /**
-     * Performs a scalar multiplication on the vector
-     * @param factor The constant by which to multiply the vector
+     * Performs a scalar multiplication on the vector.
+     * Multiplying by negative numbers will negate the vector.
+     * @param factor The constant by which to multiply the vector with
      * @return The new scaled Vector3
      */
-    public Vector3 scale(double factor) {
+    public Vector3 multiply(double factor) {
         return (new Vector3(x * factor, y * factor, z * factor));
     }
 
     /**
-     * Scales each of the vector's components using scalar multiplication by 
+     * Scales the current vector by performing a scalar multiplication on it.
+     * Scaling by negative numbers will negate the vector.
+     * (Changes the current vector)
+     * @param factor The constant by which to multiply the vector with
+     * @return The new current vector
+     */
+    public Vector3 scale(double factor) {
+        this.x *= factor;
+        this.y *= factor;
+        this.z *= factor;
+        return this;
+    }
+
+    /**
+     * Gives the unit vector for the current vector.
+     * Unit vectors will maintain direction and have a length of
+     * 1 unit.
+     * @return The unit vector for the current vector. If the vector has a length of 0,
+     * A Vector3 at (0,0,0) will be returned.
+     */
+    public Vector3 getUnitVector() {
+        try {
+            return (multiply(1 / length()));
+        }
+        catch(Exception e) {
+            return (new Vector3());
+        }
+    }
+
+    /**
+     * Multiplies each of the vector's components using scalar multiplication by 
      * their respective component in the factor vector.
      * i.e. <1,2,3>.scaleByVector(<3,2,1>) = <3, 4, 3>
      * @param factor The Vector3 by which to scale the first vector
      * @return The new scaled Vector3
      */
-    public Vector3 scaleByVector(Vector3 factor) {
+    public Vector3 multiplyByVector(Vector3 factor) {
         return (new Vector3(x * factor.x, y * factor.y, z * factor.z));
+    }
+
+    /**
+     * Scales each of the current vector's components using scalar multiplication by 
+     * their respective component in the factor vector.
+     * (Changes the current vector)
+     * i.e. <1,2,3>.scaleByVector(<3,2,1>) = <3, 4, 3>
+     * @param factor The Vector3 by which to scale the first vector
+     * @return The new current vector
+     */
+    public Vector3 scaleByVector(Vector3 factor) {
+        this.x *= factor.x;
+        this.y *= factor.y;
+        this.z *= factor.z;
+        return this;
+    }
+
+    /**
+     * Finds the factor by which a scalar multiplication must be applied to the 
+     * first vector in order to get the passed vector
+     * @param multiple The second vector to compare the first vector to.
+     * @return The factor of times bigger (longer) the second vector is than the first.
+     * If the length of v2 > length of the first vector, the return value will be > 1, and 
+     * if it is smaller, the a value between 0 and 1 will be returned. If the two vectors
+     * aren't parallel or aren't both non-zero in length, 0 will be returned.
+     */
+    public double findFactor(Vector3 v2) {
+        if (angleBetween(v2) != 0) {
+            return (v2.length() / length());
+        }
+        return 0;
     }
 
     /**
@@ -237,17 +313,24 @@ public class Vector3 {
     }
 
     /**
-     * Gives the angle between two vectors, in radians
+     * Gives the angle between two vectors, in radians.
      * @param v2 The second vector to form the angle
-     * @return The angle, in radians, as a value in the range of [0.0, pi]
+     * @return The angle, in radians, as a value in the range of [0.0, pi]. If 
+     * either vector has a length of 0, 0 will be returned.
      */
     public double angleBetween(Vector3 v2) {
-        return (Math.acos(dotProduct(v2) / (length() * v2.length())));
+        try {
+            return (Math.acos(dotProduct(v2) / (length() * v2.length())));
+        }
+        catch(Exception e) {
+            return 0;
+        }
     }
 
     /**
      * Gives the angle between the vector and the XZ plane, in radians
-     * @return The angle, in radians, as a value in the range of [0.0, pi]
+     * @return The angle, in radians, as a value in the range of [0.0, pi]. If 
+     * the vector has a length of 0, 0 will be returned.
      */
     public double angleToXZ() {
         return (angleBetween(new Vector3(x, 0, z)));
@@ -255,7 +338,8 @@ public class Vector3 {
 
     /**
      * Gives the angle between the vector and the XY plane, in radians
-     * @return The angle, in radians, as a value in the range of [0.0, pi]
+     * @return The angle, in radians, as a value in the range of [0.0, pi]. If 
+     * the vector has a length of 0, 0 will be returned.
      */
     public double angleToXY() {
         return (angleBetween(new Vector3(x, y, 0)));
@@ -263,10 +347,106 @@ public class Vector3 {
 
     /**
      * Gives the angle between the vector and the YZ plane, in radians
-     * @return The angle, in radians, as a value in the range of [0.0, pi]
+     * @return The angle, in radians, as a value in the range of [0.0, pi]. If 
+     * the vector has a length of 0, 0 will be returned.
      */
     public double angleToYZ() {
         return (angleBetween(new Vector3(0, y, z)));
+    }
+
+    /**
+     * Gives the vector result of a projection of the first
+     * vector onto the second vector
+     * @param v2 The second vector on which the first vector is
+     * projected onto
+     * @return The vector component of the first vector in the direction
+     * of the second vector. If the length of the second vector equals 0,
+     * a zero vector will be returned.
+     */
+    public Vector3 projection(Vector3 v2) {
+        try {
+            return (v2.multiply(dotProduct(v2) / (v2.length() * v2.length())));
+        }
+        catch(Exception e) {
+            return (new Vector3());
+        }
+    }
+
+    /**
+     * Gives the scalar projection of the first vector onto the second vector. The 
+     * unit vector of the second vector multiplied by the scalar projection yields
+     * the vector projection of the two vectors.
+     * @param v2 The second vector on which the first vector is
+     * projected onto
+     * @return The scalar projection of the first vector in the direction
+     * of the second vector. If the length of the second vector equals 0,
+     * the length of the first vector will be reurned.
+     */
+    public double scalarProjection(Vector3 v2) {
+        return (length() * Math.cos(angleBetween(v2)));
+    }
+
+    /**
+     * Give the result vector of a Euler rotation about the x-axis
+     * @param angle The angle to rotate, in radians
+     * @return The vector that results from this rotation
+     */
+    public Vector3 rotateX(double angle) {
+        return (new Vector3(x, y * Math.cos(angle) - z * Math.sin(angle), y * Math.sin(angle) + z * Math.cos(angle)));
+    }
+
+    /**
+     * Performs a Euler rotation on the current vector about the x-axis
+     * (Changes the current vector)
+     * @param angle The angle to rotate, in radians
+     * @return The new current vector
+     */
+    public Vector3 rotateInPlaceX(double angle) {
+        y = y * Math.cos(angle) - z * Math.sin(angle);
+        z = y * Math.sin(angle) + z * Math.cos(angle);
+        return this;
+    }
+
+    /**
+     * Give the result vector of a Euler rotation about the y-axis
+     * @param angle The angle to rotate, in radians
+     * @return The vector that results from this rotation
+     */
+    public Vector3 rotateY(double angle) {
+        return (new Vector3(x * Math.cos(angle) + z * Math.sin(angle), y, z * Math.cos(angle) - x * Math.sin(angle)));
+    }
+
+    /**
+     * Performs a Euler rotation on the current vector about the y-axis
+     * (Changes the current vector)
+     * @param angle The angle to rotate, in radians
+     * @return The new current vector
+     */
+    public Vector3 rotateInPlaceY(double angle) {
+        x = x * Math.cos(angle) + z * Math.sin(angle);
+        z = z * Math.cos(angle) - x * Math.sin(angle);
+        return this;
+    }
+
+    /**
+     * Give the result vector of a Euler rotation about the z-axis
+     * @param angle The angle to rotate, in radians
+     * @return The vector that results from this rotation
+     */
+    public Vector3 rotateZ(double angle) {
+        return (new Vector3(x * Math.cos(angle) - y * Math.sin(angle), x * Math.sin(angle) + y * Math.cos(angle), z));
+    }
+
+    /**
+     * Performs a Euler rotation on the current vector about the z-axis
+     * (Changes the current vector)
+     * @param angle The angle to rotate, in radians
+     * @return The new current vector
+     */
+    public Vector3 rotateInPlaceZ(double angle) {
+        x = x * Math.cos(angle) - y * Math.sin(angle);
+        y = x * Math.sin(angle) + y * Math.cos(angle);
+        return this;
     }
 
     /**
@@ -288,5 +468,10 @@ public class Vector3 {
      */
     public boolean equals(double x, double y, double z) {
         return (this.x == x && this.y == y && this.z == z);
+    }
+
+    @Override
+    public String toString() {
+        return ("(" + x + ", " + y + ", " + z + ")");
     }
 }

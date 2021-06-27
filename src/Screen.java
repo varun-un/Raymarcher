@@ -27,9 +27,6 @@ public class Screen extends JFrame implements Runnable {
 		setLocationRelativeTo(null);
 		setVisible(true);
 		start();
-        Vector3 v = new Vector3(5,4,2);
-        System.out.println(v.length());
-
     }
 
     private synchronized void start() {

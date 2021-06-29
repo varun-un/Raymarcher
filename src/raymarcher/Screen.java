@@ -14,11 +14,14 @@ public class Screen extends JFrame implements Runnable {
     private boolean isRunning;
 	private BufferedImage image;
 	public int[] pixels;
+    private Camera camera;
 
-    public Screen() {
+    public Screen(Camera camera) {
         thread = new Thread(this);
 		image = new BufferedImage(640, 480, BufferedImage.TYPE_INT_RGB);
         pixels = ((DataBufferInt)image.getRaster().getDataBuffer()).getData();
+        this.camera = camera;
+        camera.createRays(640, 480, .5/340, 20);
 
         setSize(640, 480);
 		setResizable(false);
@@ -70,6 +73,7 @@ public class Screen extends JFrame implements Runnable {
 			while (delta >= 1)      //Make sure update is only happening 60 times a second
 			{
 				delta--;
+                camera.render(pixels);
 			}
 			render();   //displays to the screen unrestricted time
 		}

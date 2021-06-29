@@ -1,5 +1,7 @@
 package raymarcher;
 
+import java.awt.Color;
+
 /**
  * Represents the camera in 3D space from which the scene will 
  * be rendered
@@ -12,10 +14,13 @@ public class Camera {
     private Vector3 direction;
     /** The vector which represents the upwards direction for the camera, perpendicualr to the camera's looking direction */
     private Vector3 upDirection;
-    /** The distance, in the direction the camera faces, from the camera to the screen where the image is projected upon. */
+    /** The distance, in the direction the camera faces, from the camera to the screen where the image is projected upon (similar to
+    focal length) */
     private double screenDistance;
-    /**The scene which the camera should render */
+    /** The scene which the camera should render */
     private Scene scene;
+    /** An array of the rays the camera shoots out, in the order of left to right for each row, from top to bottom */
+    private Ray[] rays;
 
     /**
      * Creates a default Camera at (0,0,0), looking in the 
@@ -37,7 +42,7 @@ public class Camera {
      * a non-perpendicular vector is passed, a perpendicular vector will be 
      * used.
      * @param screenDistance The distance, in the direction the camera faces, 
-     * from the camera to the screen where the image is projected upon. This distance
+     * from the camera to the screen where the image is projected upon (similar to focal length). This distance
      * must be > 0.
      * @param scene The scene which the camera should render
      */
@@ -172,7 +177,7 @@ public class Camera {
         Vector3 screenCenter = position.add(direction.multiply(screenDistance));
         Vector3 rightDirection = direction.crossProduct(upDirection);
 
-        Ray[] rays = new Ray[screenWidth * screenHeight];
+        rays = new Ray[screenWidth * screenHeight];
 
         int i = 0;
         for (double r = screenHeight / 2.0 - .5; r >= screenHeight / -2.0 + .5; r--) {
@@ -187,6 +192,14 @@ public class Camera {
                 rays[i] = new Ray(rayPosition, position.differenceVector(rayPosition), renderDistance);
                 i++;
             }
+        }
+        
+    }
+
+    public void render(int[] pixels) {
+
+        for (int i = 0; i < rays.length; i++) {
+            pixels[i] = rays[i].calculate(scene);
         }
     }
 

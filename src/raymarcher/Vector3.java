@@ -471,6 +471,15 @@ public class Vector3 {
         return (this.x == x && this.y == y && this.z == z);
     }
 
+    /**
+     * Clones the current vector
+     * @return a copy of the current vector
+     */
+    @Override
+    public Vector3 clone() {
+        return (new Vector3(x, y, z));
+    }
+
     @Override
     public String toString() {
         return ("(" + x + ", " + y + ", " + z + ")");

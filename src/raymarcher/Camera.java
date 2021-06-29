@@ -1,3 +1,5 @@
+package raymarcher;
+
 /**
  * Represents the camera in 3D space from which the scene will 
  * be rendered
@@ -12,6 +14,8 @@ public class Camera {
     private Vector3 upDirection;
     /** The distance, in the direction the camera faces, from the camera to the screen where the image is projected upon. */
     private double screenDistance;
+    /**The scene which the camera should render */
+    private Scene scene;
 
     /**
      * Creates a default Camera at (0,0,0), looking in the 
@@ -19,7 +23,7 @@ public class Camera {
      * direction being up
      */
     public Camera() {
-        this(new Vector3(), new Vector3(0, 0, -1), new Vector3(0, 1, 0), 1);
+        this(new Vector3(), new Vector3(0, 0, -1), new Vector3(0, 1, 0), 1, new Scene());
     }
 
     /**
@@ -35,8 +39,9 @@ public class Camera {
      * @param screenDistance The distance, in the direction the camera faces, 
      * from the camera to the screen where the image is projected upon. This distance
      * must be > 0.
+     * @param scene The scene which the camera should render
      */
-    public Camera(Vector3 position, Vector3 direction, Vector3 upDirection, double screenDistance) {
+    public Camera(Vector3 position, Vector3 direction, Vector3 upDirection, double screenDistance, Scene scene) {
         this.position = position;
 
         //direction vector
@@ -64,6 +69,9 @@ public class Camera {
             this.screenDistance = 1;
         else   
             this.screenDistance = screenDistance;
+
+        //scene
+        this.scene = scene;
     }
 
     /**
@@ -144,18 +152,40 @@ public class Camera {
             this.screenDistance = screenDistance;
     }
 
+    /**
+     * @return the current scene which the camera will render
+     */
+    public Scene getScene() {
+        return scene;
+    }
 
-    public void createRays(int screenWidth, int screenHeight, double pixelDistance) {
+    /**
+     * @param newScene the new scene to replace the current one and for the camera
+     * to render
+     */
+    public void setScene(Scene newScene) {
+        this.scene = newScene;
+    }
+
+    public void createRays(int screenWidth, int screenHeight, double pixelDistance, double renderDistance) {
 
         Vector3 screenCenter = position.add(direction.multiply(screenDistance));
         Vector3 rightDirection = direction.crossProduct(upDirection);
 
         Ray[] rays = new Ray[screenWidth * screenHeight];
 
-        int curRay = 0;
+        int i = 0;
         for (double r = screenHeight / 2.0 - .5; r >= screenHeight / -2.0 + .5; r--) {
-            for (double c = screenWidth / 2.0 - .5; c >= screenWidth / -2.0 + .5; c--) {
-                curRay++;
+
+            //go up/down certain increments of the upDirection vector from screen center for each row
+            Vector3 curRowVector = screenCenter.add(upDirection.multiply(pixelDistance * r));
+
+            for (double c = screenWidth / -2.0 + .5; c <= screenWidth / 2.0 - .5; c++) {
+
+                //create the ray
+                Vector3 rayPosition = curRowVector.add(rightDirection.multiply(pixelDistance * c));
+                rays[i] = new Ray(rayPosition, position.differenceVector(rayPosition), renderDistance);
+                i++;
             }
         }
     }

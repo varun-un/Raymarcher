@@ -1,3 +1,4 @@
+package raymarcher;
 
 /**
  * Represents a vector in 3D Euclidean space (x, y, z). Can be used to represent a 

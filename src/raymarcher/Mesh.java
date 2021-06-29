@@ -1,3 +1,4 @@
+package raymarcher;
 /**
  * The interface class of the template for each mesh within the scene
  */

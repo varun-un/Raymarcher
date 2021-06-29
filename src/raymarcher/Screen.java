@@ -1,3 +1,4 @@
+package raymarcher;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.awt.image.BufferStrategy;

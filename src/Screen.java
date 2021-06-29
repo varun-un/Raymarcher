@@ -59,24 +59,20 @@ public class Screen extends JFrame implements Runnable {
     @Override
     public void run() {
         long lastTime = System.nanoTime();
-		final double ns = 1000000000.0 / 60.0;//60 times per second
+		final double ns = 1000000000.0 / 60.0;
 		double delta = 0;
 		requestFocus();
 		while(isRunning) {
 			long now = System.nanoTime();
 			delta = delta + ((now-lastTime) / ns);
 			lastTime = now;
-			while (delta >= 1)//Make sure update is only happening 60 times a second
+			while (delta >= 1)      //Make sure update is only happening 60 times a second
 			{
 				delta--;
 			}
-			render();//displays to the screen unrestricted time
+			render();   //displays to the screen unrestricted time
 		}
 	}
-
-    public static void main(String[] args) {
-        new Screen();
-    }
     
 }
 

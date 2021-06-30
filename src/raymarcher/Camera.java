@@ -15,6 +15,8 @@ public class Camera implements KeyListener{
     private Vector3 direction;
     /** The vector which represents the upwards direction for the camera, perpendicualr to the camera's looking direction */
     private Vector3 upDirection;
+    /** The vector which represents the rightward direction of the camera */
+    private Vector3 rightDirection;
     /** The distance, in the direction the camera faces, from the camera to the screen where the image is projected upon (similar to
     focal length) */
     private double screenDistance;
@@ -75,6 +77,9 @@ public class Camera implements KeyListener{
         else
             this.upDirection = upDirection.getUnitVector();
 
+        //right vector
+        rightDirection = direction.crossProduct(upDirection);
+
         //screen distance
         if (screenDistance < 0) 
             this.screenDistance = Math.abs(screenDistance);
@@ -123,6 +128,8 @@ public class Camera implements KeyListener{
             this.direction = new Vector3(0, 0, -1);
         else
             this.direction = direction.getUnitVector();
+
+        setUpDirection(upDirection);
     }
 
     /**
@@ -149,6 +156,9 @@ public class Camera implements KeyListener{
         }
         else
             this.upDirection = upDirection.getUnitVector();
+
+
+        rightDirection = direction.crossProduct(upDirection);
     }
 
     /**
@@ -252,7 +262,6 @@ public class Camera implements KeyListener{
     public void createRays(int screenWidth, int screenHeight, double renderDistance) {
 
         Vector3 screenCenter = position.add(direction.multiply(screenDistance));
-        Vector3 rightDirection = direction.crossProduct(upDirection);
 
         rays = new Ray[screenWidth * screenHeight];
 
@@ -280,23 +289,28 @@ public class Camera implements KeyListener{
      */
     public void render(int[] pixels) {
 
-        for (int i = 0; i < rays.length; i++) {
-            pixels[i] = rays[i].calculate(scene);
-        }
-
         //check for movement
         if (forward) {
-            move(new Vector3(0, 0, -1 * movementSpeed));
-            System.out.println(rays[100].getPosition());
+            move(direction.multiply(movementSpeed));
         }
         if (back) {
-            move(new Vector3(0, 0, movementSpeed));
+            move(direction.multiply(-1 * movementSpeed));
         }
         if (left) {
-            move(new Vector3(-1 * movementSpeed, 0, 0));
+            move(rightDirection.multiply(-1 * movementSpeed));
         }
         if (right) {
-            move(new Vector3(movementSpeed, 0, 0));
+            move(rightDirection.multiply(movementSpeed));
+        }
+        if (up) {
+            move(upDirection.multiply(movementSpeed));
+        }
+        if (down) {
+            move(upDirection.multiply(-1 * movementSpeed));
+        }
+
+        for (int i = 0; i < rays.length; i++) {
+            pixels[i] = rays[i].calculate(scene);
         }
 
     }
@@ -314,6 +328,10 @@ public class Camera implements KeyListener{
 			forward = true;
 		if((e.getKeyCode() == KeyEvent.VK_S))
 			back = true;
+        if((e.getKeyCode() == KeyEvent.VK_SHIFT))
+			down = true;
+        if((e.getKeyCode() == KeyEvent.VK_SPACE))
+			up = true;
 	}
 
     /**
@@ -329,6 +347,10 @@ public class Camera implements KeyListener{
 			forward = false;
 		if((e.getKeyCode() == KeyEvent.VK_S))
 			back = false;
+        if((e.getKeyCode() == KeyEvent.VK_SHIFT))
+			down = false;
+        if((e.getKeyCode() == KeyEvent.VK_SPACE))
+			up = false;
 	}
 
     @Override

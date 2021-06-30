@@ -7,6 +7,8 @@ import java.awt.Graphics;
 
 import javax.swing.JFrame;
 
+import raymarcher.meshes.Sphere;
+
 
 public class Screen extends JFrame implements Runnable {
 
@@ -15,14 +17,16 @@ public class Screen extends JFrame implements Runnable {
 	private BufferedImage image;
 	public int[] pixels;
     private Camera camera;
+    private double framerate;
 
-    public Screen(int screenWidth, int screenHeight, Camera camera) {
+    public Screen(int screenWidth, int screenHeight, Camera camera, double framerate) {
         thread = new Thread(this);
 		image = new BufferedImage(screenWidth, screenHeight, BufferedImage.TYPE_INT_RGB);
         pixels = ((DataBufferInt)image.getRaster().getDataBuffer()).getData();
         this.camera = camera;
         camera.createRays(screenWidth, screenHeight, 20);
         addKeyListener(camera);
+        this.framerate = framerate;
 
         setSize(screenWidth, screenHeight);
 		setResizable(false);
@@ -32,6 +36,19 @@ public class Screen extends JFrame implements Runnable {
 		setLocationRelativeTo(null);
 		setVisible(true);
 		start();
+    }
+
+    public double getFrameRate() {
+        return framerate;
+    }
+
+    public void setFrameRate(double fps) {
+        if (fps < 0) 
+            framerate = Math.abs(fps);
+        if (fps == 0) 
+            framerate = 10;
+        else   
+            framerate = fps;
     }
 
     private synchronized void start() {
@@ -64,7 +81,7 @@ public class Screen extends JFrame implements Runnable {
     @Override
     public void run() {
         long lastTime = System.nanoTime();
-		final double ns = 1000000000.0 / 60.0;
+		final double ns = 1000000000.0 / framerate;        //2nd number is framerate
 		double delta = 0;
 		requestFocus();
 		while(isRunning) {

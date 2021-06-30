@@ -1,6 +1,9 @@
 package raymarcher;
 
 import java.awt.Color;
+import java.awt.Point;
+
+import javax.swing.Box;
 
 import raymarcher.meshes.Sphere;
 
@@ -9,7 +12,7 @@ public class TestScene {
     public static void main(String[] args) {
 
         Scene myScene = new Scene();
-        Mesh myMesh = new Mesh() {
+        Mesh box = new Mesh() {
 
             @Override
             public double sdf(Vector3 position) {
@@ -35,11 +38,31 @@ public class TestScene {
             }
             
         };
-        myScene.add(myMesh);
-        myScene.add(new Sphere(new Vector3(0,2,-.5), 1, Color.YELLOW));
+        // myScene.add(box);
+        myScene.add(new Sphere(new Vector3(0,3,0), 1, Color.YELLOW));
+
+
+        Mesh torus = new Mesh() {
+
+            @Override
+            public double sdf(Vector3 position) {
+
+                //t = (1,1)
+                double pxz = Math.sqrt(position.getX() * position.getX() + position.getZ() * position.getZ()) - 2;
+                double length = Math.sqrt(pxz * pxz + position.getY() * position.getY());
+                return length - .5;
+            }
+
+            @Override
+            public Color getMeshColor() {
+                return Color.red;
+            }
+
+        };
+        myScene.add(torus);
 
         Camera camera = new Camera(new Vector3(0,0,5), new Vector3(0,0,-1), new Vector3(0, 1, 0), .1, myScene);
 
-        new Screen(640, 480, camera);
+        Screen game = new Screen(640, 480, camera, 10);
     }
 }

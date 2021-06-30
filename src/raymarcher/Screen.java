@@ -7,7 +7,6 @@ import java.awt.Graphics;
 
 import javax.swing.JFrame;
 
-import raymarcher.meshes.Sphere;
 
 
 public class Screen extends JFrame implements Runnable {
@@ -17,7 +16,7 @@ public class Screen extends JFrame implements Runnable {
 	private BufferedImage image;
 	public int[] pixels;
     private Camera camera;
-    private double framerate;
+    public double framerate;
 
     public Screen(int screenWidth, int screenHeight, Camera camera, double framerate) {
         thread = new Thread(this);

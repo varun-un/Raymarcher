@@ -1,9 +1,6 @@
 package raymarcher;
 
 import java.awt.Color;
-import java.awt.Point;
-
-import javax.swing.Box;
 
 import raymarcher.meshes.Sphere;
 
@@ -63,6 +60,6 @@ public class TestScene {
 
         Camera camera = new Camera(new Vector3(0,0,5), new Vector3(0,0,-1), new Vector3(0, 1, 0), .1, myScene);
 
-        Screen game = new Screen(640, 480, camera, 10);
+        new Screen(640, 480, camera, 10);
     }
 }

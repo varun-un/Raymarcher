@@ -29,8 +29,13 @@ public class Camera implements KeyListener{
     private double pixelDistance;
     /**The movement speed of the camera, in scene units per frame */
     public double movementSpeed;
+    /** The rotation speed of the camera, in radians per frame */
+    public double rotationSpeed;
     /**Indicates whether or not the camera is to move in that direction */
     private boolean left, right, forward, back, up, down;
+    /**Indicates whether or not the camera is to rotate or tilt in that direction */
+    private boolean tiltUp, tiltDown, rotateLeft, rotateRight;
+
 
     /**
      * Creates a default Camera at (0,0,0), looking in the 
@@ -96,6 +101,7 @@ public class Camera implements KeyListener{
 
         //set movement speed
         this.movementSpeed = 1/10.0;
+        this.rotationSpeed = Math.PI / 50;
     }
 
     /**
@@ -223,18 +229,33 @@ public class Camera implements KeyListener{
     }
 
     /**
-     * @return The current movement speed of the camera, in scene units per second 
+     * @return The current movement speed of the camera, in scene units per frame 
      */
     public double getMovementSpeed() {
-        return movementSpeed * 60;
+        return movementSpeed;
     }
 
     /**
      * @param movementSpeed The new movement speed to set the camera to, in scene units
-     * per second
+     * per frame
      */
     public void setMovementSpeed(double movementSpeed) {
-        this.movementSpeed = movementSpeed / 60.0;
+        this.movementSpeed = movementSpeed;
+    }
+
+    /**
+     * @return The current rotation speed of the camera, in scene units per frame 
+     */
+    public double getRotationSpeed() {
+        return rotationSpeed;
+    }
+
+    /**
+     * @param rotationSpeed The new rotation speed to set the camera to, in scene units
+     * per frame
+     */
+    public void setRotationSpeed(double rotationSpeed) {
+        this.rotationSpeed = rotationSpeed;
     }
     
 
@@ -246,8 +267,36 @@ public class Camera implements KeyListener{
         position.addInPlace(shift);
 
         for (int i = 0; i < rays.length; i++) {
-            rays[i].setPosition(rays[i].getPosition().add(shift));
+            rays[i].getPosition().addInPlace(shift);
         }
+    }
+
+    /**
+     * Rotates the camera around the y-axis by a given amount
+     * @param angle The amount to rotate, in radians
+     */
+    public void rotateY(double angle) {
+        direction.rotateInPlaceY(angle);
+        upDirection.rotateInPlaceY(angle);
+        rightDirection.rotateInPlaceY(angle);
+
+        for (int i = 0; i < rays.length; i++) {
+            rays[i].getDirection().rotateInPlaceY(angle);
+        } 
+    }
+
+    /**
+     * Rotates the camera around the x-axis by a given amount
+     * @param angle The amount to rotate, in radians
+     */
+    public void rotateX(double angle) {
+        direction.rotateInPlaceX(angle);
+        upDirection.rotateInPlaceX(angle);
+        rightDirection.rotateInPlaceX(angle);
+
+        for (int i = 0; i < rays.length; i++) {
+            rays[i].getDirection().rotateInPlaceX(angle);
+        } 
     }
 
 
@@ -309,6 +358,21 @@ public class Camera implements KeyListener{
             move(upDirection.multiply(-1 * movementSpeed));
         }
 
+        //check for rotation
+        if (tiltUp) {
+            rotateX(rotationSpeed);
+        }
+        if (tiltDown) {
+            rotateX(rotationSpeed * -1);
+        }
+        if (rotateLeft) {
+            rotateY(rotationSpeed);
+        }
+        if (rotateRight) {
+            rotateY(rotationSpeed * -1);
+        }
+
+        //render rays
         for (int i = 0; i < rays.length; i++) {
             pixels[i] = rays[i].calculate(scene);
         }
@@ -332,6 +396,15 @@ public class Camera implements KeyListener{
 			down = true;
         if((e.getKeyCode() == KeyEvent.VK_SPACE))
 			up = true;
+        if((e.getKeyCode() == KeyEvent.VK_UP))
+			tiltUp = true;
+        if((e.getKeyCode() == KeyEvent.VK_DOWN))
+			tiltDown = true;
+        if((e.getKeyCode() == KeyEvent.VK_LEFT))
+			rotateLeft = true;
+        if((e.getKeyCode() == KeyEvent.VK_RIGHT))
+			rotateRight = true;
+        
 	}
 
     /**
@@ -351,6 +424,14 @@ public class Camera implements KeyListener{
 			down = false;
         if((e.getKeyCode() == KeyEvent.VK_SPACE))
 			up = false;
+        if((e.getKeyCode() == KeyEvent.VK_UP))
+			tiltUp = false;
+        if((e.getKeyCode() == KeyEvent.VK_DOWN))
+			tiltDown = false;
+        if((e.getKeyCode() == KeyEvent.VK_LEFT))
+			rotateLeft = false;
+        if((e.getKeyCode() == KeyEvent.VK_RIGHT))
+			rotateRight = false;
 	}
 
     @Override

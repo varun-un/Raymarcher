@@ -1,12 +1,13 @@
 package raymarcher;
 
-import java.awt.Color;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 /**
  * Represents the camera in 3D space from which the scene will 
  * be rendered
  */
-public class Camera {
+public class Camera implements KeyListener{
     
     /** The position of the camera in 3D space */
     private Vector3 position;
@@ -24,6 +25,10 @@ public class Camera {
     /** The distance, in scene units between the center of each pixel and the one adjacent to it. Decreasing this has a similar effect
     to increasing screenDistance */
     private double pixelDistance;
+    /**The movement speed of the camera, in scene units per frame */
+    public double movementSpeed;
+    /**Indicates whether or not the camera is to move in that direction */
+    private boolean left, right, forward, back, up, down;
 
     /**
      * Creates a default Camera at (0,0,0), looking in the 
@@ -83,6 +88,9 @@ public class Camera {
 
         //set pixel distance
         this.pixelDistance = 0.00025;
+
+        //set movement speed
+        this.movementSpeed = 1/10.0;
     }
 
     /**
@@ -205,6 +213,36 @@ public class Camera {
     }
 
     /**
+     * @return The current movement speed of the camera, in scene units per second 
+     */
+    public double getMovementSpeed() {
+        return movementSpeed * 60;
+    }
+
+    /**
+     * @param movementSpeed The new movement speed to set the camera to, in scene units
+     * per second
+     */
+    public void setMovementSpeed(double movementSpeed) {
+        this.movementSpeed = movementSpeed / 60.0;
+    }
+    
+
+    /**
+     * Shift's the camera's position by a given vector
+     * @param shift The vector to add to the camera's current position
+     */
+    public void move(Vector3 shift) {
+        position.addInPlace(shift);
+
+        for (int i = 0; i < rays.length; i++) {
+            rays[i].setPosition(rays[i].getPosition().add(shift));
+        }
+    }
+
+
+
+    /**
      * Creates the set or rays to be cast from the camera
      * @param screenWidth The amount of pixels wide the screen/window is
      * @param screenHeight The amount of pixels tall the screen/window is
@@ -246,6 +284,54 @@ public class Camera {
             pixels[i] = rays[i].calculate(scene);
         }
 
+        //check for movement
+        if (forward) {
+            move(new Vector3(0, 0, -1 * movementSpeed));
+            System.out.println(rays[100].getPosition());
+        }
+        if (back) {
+            move(new Vector3(0, 0, movementSpeed));
+        }
+        if (left) {
+            move(new Vector3(-1 * movementSpeed, 0, 0));
+        }
+        if (right) {
+            move(new Vector3(movementSpeed, 0, 0));
+        }
+
     }
+
+    /**
+     * Detects when and how to move the camera
+     */
+    @Override
+    public void keyPressed(KeyEvent e) {
+        if((e.getKeyCode() == KeyEvent.VK_A))
+			left = true;
+		if((e.getKeyCode() == KeyEvent.VK_D))
+			right = true;
+		if((e.getKeyCode() == KeyEvent.VK_W))
+			forward = true;
+		if((e.getKeyCode() == KeyEvent.VK_S))
+			back = true;
+	}
+
+    /**
+     * Detects when to stop moving the camera
+     */
+    @Override
+	public void keyReleased(KeyEvent e) {
+		if((e.getKeyCode() == KeyEvent.VK_A))
+			left = false;
+		if((e.getKeyCode() == KeyEvent.VK_D))
+			right = false;
+		if((e.getKeyCode() == KeyEvent.VK_W))
+			forward = false;
+		if((e.getKeyCode() == KeyEvent.VK_S))
+			back = false;
+	}
+
+    @Override
+    public void keyTyped(KeyEvent e) {}
 
 }

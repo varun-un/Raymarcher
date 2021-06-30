@@ -38,7 +38,7 @@ public class TestScene {
         myScene.add(myMesh);
         myScene.add(new Sphere(new Vector3(0,2,-.5), 1, Color.YELLOW));
 
-        Camera camera = new Camera(new Vector3(2, 3, 5), new Vector3(-2, -3, -5), new Vector3(0, 1, 0), .1, myScene);
+        Camera camera = new Camera(new Vector3(0,0,5), new Vector3(0,0,-1), new Vector3(0, 1, 0), .1, myScene);
 
         new Screen(640, 480, camera);
     }

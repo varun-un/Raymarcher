@@ -22,6 +22,7 @@ public class Screen extends JFrame implements Runnable {
         pixels = ((DataBufferInt)image.getRaster().getDataBuffer()).getData();
         this.camera = camera;
         camera.createRays(screenWidth, screenHeight, 20);
+        addKeyListener(camera);
 
         setSize(screenWidth, screenHeight);
 		setResizable(false);

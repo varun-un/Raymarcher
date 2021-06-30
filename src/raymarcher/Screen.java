@@ -16,16 +16,16 @@ public class Screen extends JFrame implements Runnable {
 	public int[] pixels;
     private Camera camera;
 
-    public Screen(Camera camera) {
+    public Screen(int screenWidth, int screenHeight, Camera camera) {
         thread = new Thread(this);
-		image = new BufferedImage(640, 480, BufferedImage.TYPE_INT_RGB);
+		image = new BufferedImage(screenWidth, screenHeight, BufferedImage.TYPE_INT_RGB);
         pixels = ((DataBufferInt)image.getRaster().getDataBuffer()).getData();
         this.camera = camera;
-        camera.createRays(640, 480, .5/340, 20);
+        camera.createRays(screenWidth, screenHeight, 20);
 
-        setSize(640, 480);
+        setSize(screenWidth, screenHeight);
 		setResizable(false);
-		setTitle("3D Engine");
+		setTitle("Raymarcher Engine");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBackground(Color.black);
 		setLocationRelativeTo(null);

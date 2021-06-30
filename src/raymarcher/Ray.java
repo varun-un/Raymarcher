@@ -1,6 +1,5 @@
 package raymarcher;
 
-import java.awt.Color;
 import java.util.ArrayList;
 
 /**
@@ -92,34 +91,47 @@ public class Ray {
     }
 
 
+    /**
+     * Calculates which color this ray will be after marching forwards
+     * @param scene The scene which includes all meshes to search for ray hits with
+     * @return The color value of the pixel corresponding to this ray, as an int
+     * RGB value representing the color in the default sRGB
+     * {@link ColorModel}
+     */
     public int calculate(Scene scene) {
         ArrayList<Mesh> meshes = scene.getMeshes();
         Vector3 marchPosition = position.clone();
 
         double distToScene = epsilon + 1;
         double distTraveled = 0;
+        Mesh closestMesh = meshes.get(0);
 
-        //keep marching until mesh is hit
+        //keep marching until mesh is hit or ray hits render distance
         while (distToScene > epsilon && distTraveled < renderDistance) {             
 
             double minDist = meshes.get(0).sdf(marchPosition);
+
+            //loop through scene to find closest mesh
             for (int i = 1; i < meshes.size(); i++) {
                 double sdf = meshes.get(i).sdf(marchPosition);
                 if (sdf < minDist) {
                     minDist = sdf;
+                    closestMesh = meshes.get(i);
                 }
             }
 
             distToScene = minDist;
             distTraveled += distToScene;
-            marchPosition.addInPlace(direction.multiply(distToScene));
+            marchPosition.addInPlace(direction.multiply(distToScene));      //march the ray
         }
 
+        //there seems to be issue with coloring (thinks it hit sphere when it hit box) (use ray # 198120)
 
+        //see if hit a mesh or hit nothing
         if (distTraveled > renderDistance)
             return scene.getWorldColor();
         else
-            return Color.RED.getRGB();
+            return closestMesh.getMeshColor().getRGB();
 
     }
 

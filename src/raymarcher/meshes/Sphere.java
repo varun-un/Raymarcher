@@ -1,23 +1,29 @@
 package raymarcher.meshes;
 
+import java.awt.Color;
+
 import raymarcher.Mesh;
 import raymarcher.Vector3;
 
-public class Sphere implements Mesh{
+public class Sphere implements Mesh {
 
     /**The position of the sphere's center */
     private Vector3 position;
     /**The radius of the sphere */
     private double radius;
+    /**The color of the mesh */
+    private Color meshColor;
 
     /**
      * Create a sphere mesh 
      * @param position The position in 3D space to center the sphere
      * @param radius The radius of the sphere
+     * @param meshColor The color of the sphere
      */
-    public Sphere(Vector3 position, double radius) {
+    public Sphere(Vector3 position, double radius, Color meshColor) {
         this.position = position;
         this.radius = Math.abs(radius);
+        this.meshColor = meshColor;
     }
     
 
@@ -47,6 +53,18 @@ public class Sphere implements Mesh{
      */
     public void setRadius(double radius) {
         this.radius = radius;
+    }
+
+    /**
+     * @param meshColor The new color to set the mesh to
+     */
+    public void setMeshColor(Color meshColor) {
+        this.meshColor = meshColor;
+    }
+
+    @Override
+    public Color getMeshColor() {
+        return meshColor;
     }
 
     

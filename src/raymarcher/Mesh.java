@@ -1,4 +1,7 @@
 package raymarcher;
+
+import java.awt.Color;
+
 /**
  * The interface class of the template for each mesh within the scene
  */
@@ -14,4 +17,10 @@ public interface Mesh {
      * the surface, and values < 0 are points inside the mesh.
      */
     public double sdf(Vector3 position);
+
+    /**
+     * Gives the mesh's color
+     * @return The color of the mesh
+     */
+    public Color getMeshColor();
 }

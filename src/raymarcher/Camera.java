@@ -21,14 +21,17 @@ public class Camera {
     private Scene scene;
     /** An array of the rays the camera shoots out, in the order of left to right for each row, from top to bottom */
     private Ray[] rays;
+    /** The distance, in scene units between the center of each pixel and the one adjacent to it. Decreasing this has a similar effect
+    to increasing screenDistance */
+    private double pixelDistance;
 
     /**
      * Creates a default Camera at (0,0,0), looking in the 
-     * -z direction, with a screen distance of 1 and the +y 
-     * direction being up
+     * -z direction, with a screen distance of 1, the +y 
+     * direction being up, and a screen distance of .1
      */
     public Camera() {
-        this(new Vector3(), new Vector3(0, 0, -1), new Vector3(0, 1, 0), 1, new Scene());
+        this(new Vector3(), new Vector3(0, 0, -1), new Vector3(0, 1, 0), .1, new Scene());
     }
 
     /**
@@ -77,6 +80,9 @@ public class Camera {
 
         //scene
         this.scene = scene;
+
+        //set pixel distance
+        this.pixelDistance = 0.00025;
     }
 
     /**
@@ -172,7 +178,40 @@ public class Camera {
         this.scene = newScene;
     }
 
-    public void createRays(int screenWidth, int screenHeight, double pixelDistance, double renderDistance) {
+    /**
+     * Get the distance between each pixel in the camera. A greater value
+     * makes the screen's edges more stretched.
+     * @return The current distance, in scene units, between the 
+     * center of each pixel and the one adjacent to it. 
+     */
+    public double getPixelDistance() {
+        return pixelDistance;
+    }
+
+    /**
+     * Set the distance between each pixel in the camera. A greater value
+     * makes the screen's edges more stretched.
+     * @param pixelDistance The new distance, in scene units, between the 
+     * center of each pixel and the one adjacent to it. This value should 
+     * be > 0.
+     */
+    public void setPixelDistance(double pixelDistance) {
+        if (pixelDistance < 0) 
+            this.pixelDistance = Math.abs(pixelDistance);
+        if (pixelDistance == 0) 
+            this.pixelDistance = 1;
+        else   
+            this.pixelDistance = pixelDistance;
+    }
+
+    /**
+     * Creates the set or rays to be cast from the camera
+     * @param screenWidth The amount of pixels wide the screen/window is
+     * @param screenHeight The amount of pixels tall the screen/window is
+     * @param renderDistance The maximum distance for a ray to travel before assuming
+     * it has hit nothing
+     */
+    public void createRays(int screenWidth, int screenHeight, double renderDistance) {
 
         Vector3 screenCenter = position.add(direction.multiply(screenDistance));
         Vector3 rightDirection = direction.crossProduct(upDirection);
@@ -196,11 +235,17 @@ public class Camera {
         
     }
 
+    /**
+     * Called on every frame refresh to recalculate the screen
+     * @param pixels The array of pixel color values, linked to the pixels 
+     * of the Screen's BufferedImage
+     */
     public void render(int[] pixels) {
 
         for (int i = 0; i < rays.length; i++) {
             pixels[i] = rays[i].calculate(scene);
         }
+
     }
 
 }

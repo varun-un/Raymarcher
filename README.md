@@ -2,6 +2,8 @@
 
 Raymarcher is a primitive realtime 3D rendering engine based in Java that uses [raymarching](https://en.wikipedia.org/wiki/Volume_ray_casting) to render 3D geometry. I made this project as a proof-of-concept to try and create 3D scenes and shapes within vanilla Java, while also to learn more about raymarching and how it works. 
 
+The program's full documentation can be found at: <https://varun-un.github.io/Raymarcher/>
+
 ## Raymarching
 
 [Raymarching](https://en.wikipedia.org/wiki/Volume_ray_casting) is a technique used to render 3D geometry with more photorealism than rasterization, while also having its own unique features and uses. It works by having each of the meshes and objects within the scene be defined by a [signed distance function](https://en.wikipedia.org/wiki/Signed_distance_function) (SDF) instead of by geometry, such as their vertices and faces. An SDF calculates the distance from a point in space to the mesh, with positive distances indicating the point is outside the mesh, a 0 distance indicating the point is on the mesh's surface, and a negative distance indicating that the point is inside the mesh.
@@ -29,7 +31,7 @@ Right Arrow - rotate around global y-axis in a +y direction <br>
 
 ### Create your own scenes
 
-The most important part of any 3D angine is the ability to render a variety of different shapes and scenes, which is what this guide will show you how to do for Raymarcher. The full documentation for all classes can be found at **[varun-un.github.io/raymarcher/](varun-un.github.io/raymarcher/)**.
+The most important part of any 3D angine is the ability to render a variety of different shapes and scenes, which is what this guide will show you how to do for Raymarcher. The full documentation for all classes can be found at **<https://varun-un.github.io/Raymarcher/>**.
 
 
 #### Scene

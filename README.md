@@ -1,6 +1,6 @@
 # Raymarcher
 
-Raymarcher is a primitive realtime 3D rendering engine based in Java that uses [raymarching](https://en.wikipedia.org/wiki/Volume_ray_casting) to render 3D geometry. I made this project as a proof-of-concept to try and create 3D scenes and shapes within vanilla Java, while also to learn more about raymarching and how it works. 
+Raymarcher is a primitive real-time 3D rendering engine based in Java that uses [raymarching](https://en.wikipedia.org/wiki/Volume_ray_casting) to render 3D geometry. I made this project as a proof-of-concept to try and create 3D scenes and shapes within vanilla Java, while also to learn more about raymarching and how it works. 
 
 The program's full documentation can be found at: <https://varun-un.github.io/Raymarcher/>
 
@@ -10,7 +10,7 @@ The program's full documentation can be found at: <https://varun-un.github.io/Ra
 
 In raymarching, rays are shot from the camera for each pixel on the screen. A ray will use the SDFs of the scene's objects to calculate the its distance to the scene, which will be the largest safe amount for it to march forwards without intersecting a mesh. After marching forwards, the ray will repeat this process, finding the distance to the scene and continuing marching until it has a small enough distance to the scene that it assumes it has hit a mesh, at which point the ray colors its respective pixel on the screen with the corresponding color. The collection of rays allow the scene to be rendered.
 
-Raymarching is often a niche technique that is used because while it is computationally expensive, it can produce unique and interesting effects. Its main use within both realtime and non realtime rendering is for things like ambient occlusion and screenspace reflections, at it can perform these tasks more efficiently than ray tracing can and with better quality than rasterization. It is also unique in that because of its nature, it allows for the ability to warp and create non-Euclidean space, such as a closed, repeating world, with little extra compuatation. This makes it good for rendering infinitely repeating geometry, such as in a fractal. While these are all useful applications of raymarching, only the base raymarching techniques have been implemented in this program so far.
+Raymarching is often a niche technique that is used because while it is computationally expensive, it can produce unique and interesting effects. Its main use within both real-time and non real-time rendering is for things like ambient occlusion and screenspace reflections, at it can perform these tasks more efficiently than ray tracing can and with better quality than rasterization. It is also unique in that because of its nature, it allows for the ability to warp and create non-Euclidean space, such as a closed, repeating world, with little extra compuatation. This makes it good for rendering infinitely repeating geometry, such as in a fractal. While these are all useful applications of raymarching, only the base raymarching techniques have been implemented in this program so far.
 
 ## Use
 

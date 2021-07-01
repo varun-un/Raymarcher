@@ -28,7 +28,7 @@ public class Ray {
         this.position = position;
         this.direction = direction.getUnitVector();
         this.renderDistance = renderDistance;
-        this.epsilon = .001;
+        this.epsilon = .005;
     }
     
 
@@ -96,7 +96,7 @@ public class Ray {
      * @param scene The scene which includes all meshes to search for ray hits with
      * @return The color value of the pixel corresponding to this ray, as an int
      * RGB value representing the color in the default sRGB
-     * {@link ColorModel}
+     * {@link java.awt.image.ColorModel ColorModel}.
      */
     public int calculate(Scene scene) {
         ArrayList<Mesh> meshes = scene.getMeshes();

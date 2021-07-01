@@ -3,6 +3,9 @@ package raymarcher;
 import java.util.ArrayList;
 import java.awt.Color;
 
+/**
+ * The scene which the camera will render
+ */
 public class Scene {
 
     /**A List of the meshes to render in this scene */
@@ -33,7 +36,7 @@ public class Scene {
 
     /**
      * @return the color of the world background as an RGB int in the default sRGB
-     * {@link ColorModel}.
+     * {@link java.awt.image.ColorModel ColorModel}.
      * (Bits 24-31 are alpha, 16-23 are red, 8-15 are green, 0-7 are
      * blue).
      */
@@ -44,7 +47,7 @@ public class Scene {
     /**
      * @param worldColor the color to set the world background to as an int
      * in the default sRGB
-     * {@link ColorModel}.
+     * {@link java.awt.image.ColorModel ColorModel}.
      */
     public void setWorldColor(int worldColor) {
         this.worldColor = worldColor;

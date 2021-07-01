@@ -209,7 +209,7 @@ public class Vector3 {
     /**
      * Finds the factor by which a scalar multiplication must be applied to the 
      * first vector in order to get the passed vector
-     * @param multiple The second vector to compare the first vector to.
+     * @param v2 The second vector to compare the first vector to.
      * @return The factor of times bigger (longer) the second vector is than the first.
      * If the length of v2 > length of the first vector, the return value will be > 1, and 
      * if it is smaller, the a value between 0 and 1 will be returned. If the two vectors

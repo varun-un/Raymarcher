@@ -6,7 +6,7 @@ import java.awt.Color;
  * A class that allows for seperate meshes and geometry to be combined 
  * into a single mesh using boolean operations, to create more complex
  * geometry.
- * @see <a href="https://en.wikipedia.org/wiki/Constructive_solid_geometry">Wikipedia Constructive Solid Geometery</a>
+ * <a href="https://en.wikipedia.org/wiki/Constructive_solid_geometry">Wikipedia Constructive Solid Geometery</a>
  */
 public class MeshGroup implements Mesh{
     

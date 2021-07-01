@@ -157,6 +157,14 @@ public class Vector3 {
     }
 
     /**
+     * Returns the absolute value of the current vector
+     * @return the current vector, but with no negative coordinates
+     */
+    public Vector3 abs() {
+        return (new Vector3(Math.abs(x), Math.abs(y), Math.abs(z)));
+    }
+
+    /**
      * Gives the unit vector for the current vector.
      * Unit vectors will maintain direction and have a length of
      * 1 unit.

@@ -5,6 +5,9 @@ import java.awt.Color;
 import raymarcher.Mesh;
 import raymarcher.Vector3;
 
+/**
+ * An implementation of the Mesh interface that renders a sphere
+ */
 public class Sphere implements Mesh {
 
     /**The position of the sphere's center */
